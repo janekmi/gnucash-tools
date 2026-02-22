@@ -33,4 +33,9 @@ jobs:
           echo "Files to lint:"
           git ls-files *.py
           echo
-          pylint --reports y $(git ls-files *.py)
+          pylint --reports y $(git ls-files *.py) | tee pylint_output.txt
+
+      - name: Print pylint output as notice
+        if: always()
+        run: |
+          echo "::notice::$(sed ':a;N;$!ba;s/\n/%0A/g' pylint_output.txt)"
