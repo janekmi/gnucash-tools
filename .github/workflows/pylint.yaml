@@ -30,4 +30,12 @@ jobs:
           # E0401: Unable to import 'gnucash' (import-error)
           PYTHONPATH: /usr/lib/python3/dist-packages/
         run: |
-          pylint *.py
+          echo "Files to lint:"
+          git ls-files *.py
+          echo
+          pylint --reports y $(git ls-files *.py) | tee pylint_output.txt
+
+      - name: Print pylint output as notice
+        if: always()
+        run: |
+          echo "::notice::$(sed -f .github/workflows/scripts/join_lines.sed pylint_output.txt)"
