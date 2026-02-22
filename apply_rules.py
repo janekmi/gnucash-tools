@@ -4,11 +4,11 @@
 
 # pylint: disable=missing-module-docstring,missing-function-docstring
 
+import argparse
 from datetime import datetime
+from pathlib import Path
 import yaml
 from gnucash import Session, SessionOpenMode, GncNumeric
-import argparse
-from pathlib import Path
 
 # Arguments
 parser = argparse.ArgumentParser(description="Apply rules")
@@ -40,7 +40,7 @@ parser.add_argument(
 
 
 # Globals
-price_db = None
+price_db = None # pylint: disable=invalid-name
 
 # Constants
 ACCOUNTS_TO_SCAN_KEY = "Accounts to scan"
@@ -107,7 +107,7 @@ def get_exchange_rate(src_account, dst_account, date):
     # find the nearest in time exchange rate
     price = price_db.lookup_nearest_in_time64(comm, curr, date)
     value = price.get_value()
-    return GncNumeric(value.num, value.denom).to_double()
+    return GncNumeric(value.num, value.denom).to_double() # pylint: disable=no-member
 
 
 def set_dst_account(txn, dst_account):
@@ -158,11 +158,11 @@ def process(root, rules, year, month):
 
 
 def main():
-    global price_db
+    global price_db # pylint: disable=global-statement
 
     args = parser.parse_args()
 
-    with open(args.rules, "r") as f:
+    with open(args.rules, "r", encoding="utf-8") as f:
         rules = yaml.safe_load(f)
 
     with Session(str(args.gnucash_file), mode=SessionOpenMode.SESSION_NORMAL_OPEN) as session:
@@ -170,7 +170,7 @@ def main():
         root = book.get_root_account()
         price_db = book.get_price_db()
         process(root, rules, args.year, args.month)
-        session.save()
+        session.save() # pylint: disable=no-member
 
 
 if __name__ == "__main__":
