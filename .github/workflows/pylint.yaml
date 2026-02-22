@@ -18,7 +18,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt install gnucash
+          sudo apt-get update
+          sudo apt-get install gnucash
           pip install pylint
           pip install -r requirements.txt
 
