@@ -11,26 +11,26 @@ import argparse
 from pathlib import Path
 
 # Arguments
-Parser = argparse.ArgumentParser(description="Apply rules")
-Parser.add_argument(
+parser = argparse.ArgumentParser(description="Apply rules")
+parser.add_argument(
     "--rules",
     type=Path,
     required=True,
     help="Path to the rules.yaml file"
 )
-Parser.add_argument(
+parser.add_argument(
     "--gnucash_file",
     type=Path,
     required=True,
     help="Path to the GnuCash file (.gnucash, .xac, etc.)"
 )
-Parser.add_argument(
+parser.add_argument(
     "--year",
     type=int,
     required=True,
     help="Year to process (e.g., 2026)"
 )
-Parser.add_argument(
+parser.add_argument(
     "--month",
     type=int,
     choices=range(1, 13),
@@ -40,7 +40,7 @@ Parser.add_argument(
 
 
 # Globals
-PriceDb = None
+price_db = None
 
 # Constants
 ACCOUNTS_TO_SCAN_KEY = "Accounts to scan"
@@ -105,7 +105,7 @@ def get_exchange_rate(src_account, dst_account, date):
     curr = dst_account.GetCommodity()
 
     # find the nearest in time exchange rate
-    price = PriceDb.lookup_nearest_in_time64(comm, curr, date)
+    price = price_db.lookup_nearest_in_time64(comm, curr, date)
     value = price.get_value()
     return GncNumeric(value.num, value.denom).to_double()
 
@@ -158,9 +158,9 @@ def process(root, rules, year, month):
 
 
 def main():
-    global PriceDb
+    global price_db
 
-    args = Parser.parse_args()
+    args = parser.parse_args()
 
     with open(args.rules, "r") as f:
         rules = yaml.safe_load(f)
@@ -168,7 +168,7 @@ def main():
     with Session(str(args.gnucash_file), mode=SessionOpenMode.SESSION_NORMAL_OPEN) as session:
         book = session.book
         root = book.get_root_account()
-        PriceDb = book.get_price_db()
+        price_db = book.get_price_db()
         process(root, rules, args.year, args.month)
         session.save()
 
