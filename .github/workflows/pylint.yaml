@@ -38,4 +38,4 @@ jobs:
       - name: Print pylint output as notice
         if: always()
         run: |
-          echo "::notice::$(sed ':a;N;$!ba;s/\n/%0A/g' pylint_output.txt)"
+          echo "::notice::$(sed -f .github/workflows/scripts/join_lines.sed pylint_output.txt)"
