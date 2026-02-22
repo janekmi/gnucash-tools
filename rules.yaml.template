@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (c) 2026 Jan Michalski
+
+"Accounts to scan":
+  - "Assets:Current Assets:Account A"
+  - "Assets:Current Assets:Account B"
+Rules:
+  "Expenses:Groceries":
+    - "7-Eleven"
+    - "Tesco"
+    - "Lidl"
+  "Income:Salary":
+    - "Your employer"

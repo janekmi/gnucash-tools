@@ -1,0 +1,4 @@
+*.gnucash
+*.gnucash.*.log
+*.yaml
+!.github/workflows/*.yaml
