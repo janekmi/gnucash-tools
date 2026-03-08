@@ -89,9 +89,10 @@ def print_txn(txn):
 
 
 def txn_get_amount(txn, account_path):
-    split = txn.GetSplitList()[0]
-    value = split.GetAmount().to_double()
-    return value if split.GetAccount().GetName() == account_path.split(':')[-1] else -value
+    account_name = account_path.split(':')[-1]
+    for split in txn.GetSplitList():
+        if split.GetAccount().GetName() == account_name:
+            return split.GetAmount().to_double()
 
 
 def get_all_transactions_sum(root, account_path, year, month):
