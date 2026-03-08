@@ -2,3 +2,4 @@
 *.gnucash.*.log
 *.yaml
 !.github/workflows/*.yaml
+*.mmd

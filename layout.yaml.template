@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (c) 2026 Jan Michalski
+
+"Income:in":
+  - "Income:Salary"
+  - "Income:Other Income"
+"Auto:out:invisible":
+  - "Expenses:Auto:Parking"
+  - "Expenses:Auto:Lease"
+  - "Expenses:Auto:Repair and Maintenance"
+"Dining:out:invisible":
+  - "Expenses:Dining:Cafe"
+  - "Expenses:Dining:Drinks"
+  - "Expenses:Dining:Eating out"
+"Entertainment:out:invisible":
+  - "Expenses:Books"
+  - "Expenses:Education"
+  - "Expenses:Electronics"
+  - "Expenses:Entertainment:Music/Movies"
+  - "Expenses:Entertainment:Recreation"
+  - "Expenses:Subscriptions"
+"Income:out":
+  - "Assets:Other Assets:Minka"
+  - "Auto"                                                             
+  - "Expenses:Charity"
+  - "Expenses:Clothes"
+  - "Dining"
+  - "Entertainment"
+  - "Expenses:Entertainment:Travel"
+  - "Expenses:Gifts"
+  - "Expenses:Groceries"
+  - "Expenses:Hobbies"
+  - "Expenses:Home:Rent"
+  - "Expenses:Medical Expenses"
+  - "Expenses:Miscellaneous"
+  - "Expenses:Taxes:State/Province"
+  - "Expenses:Utilities:Electric"
+  - "Expenses:Utilities:Internet"
+  - "Expenses:Utilities:Water"
+  - "Liabilities:Loans:Mortgage Loan"
