@@ -5,7 +5,7 @@
 # pylint: disable=missing-module-docstring,missing-function-docstring
 
 import argparse
-from datetime import datetime
+from datetime import datetime, timedelta
 from dataclasses import dataclass
 from pathlib import Path
 import yaml
@@ -39,10 +39,23 @@ parser.add_argument(
     help="Month to start process from (1–12)"
 )
 parser.add_argument(
+    "--day",
+    type=int,
+    choices=range(1, 32),
+    default=1,
+    help="Day to start process from (1–31)"
+)
+parser.add_argument(
     "--num_months",
     type=int,
     default=1,
     help="Number of months to process"
+)
+parser.add_argument(
+    "--num_days",
+    type=int,
+    default=0,
+    help="Number of days to process"
 )
 parser.add_argument(
     "--output",
@@ -65,10 +78,12 @@ DEBUG_ACCOUNT = ''
 
 
 @dataclass
-class MonthRange: # pylint: disable=missing-class-docstring
+class DateRange: # pylint: disable=missing-class-docstring
     year: int
     month: int
+    day: int
     num_months: int
+    num_days: int
 
 
 def account_lookup_by_path(account, path_str):
@@ -81,19 +96,22 @@ def account_lookup_by_path(account, path_str):
     return _account_lookup_by_path(account, path_str.split(":"))
 
 
-def filter_out(dt, months):
-    year = months.year
-    dt1 = datetime(year, months.month, 1)
-    month2 = ((months.month - 1) + months.num_months) % 12 + 1
-    year += (months.month + months.num_months) // 12
-    dt2 = datetime(year, month2, 1)
+def filter_out(dt, drange):
+    year = drange.year
+    dt1 = datetime(year, drange.month, drange.day)
+    if drange.num_days != 0:
+        dt2 = dt1 + timedelta(days=drange.num_days)
+    else:
+        month2 = ((drange.month - 1) + drange.num_months) % 12 + 1
+        year += (drange.month + drange.num_months) // 12
+        dt2 = datetime(year, month2, 1)
     return dt < dt1 or dt >= dt2
 
 
-def get_transactions(account, months):
+def get_transactions(account, drange):
     return [
         split.parent for split in account.GetSplitList()
-        if not filter_out(split.parent.GetDate(), months)]
+        if not filter_out(split.parent.GetDate(), drange)]
 
 
 def print_txn(txn, account_path):
@@ -113,9 +131,9 @@ def txn_get_amount(txn, account_path):
     raise ValueError(f'The account {account_path} does not participate in the transaction')
 
 
-def get_all_transactions_sum(root, account_path, months):
+def get_all_transactions_sum(root, account_path, drange):
     account = account_lookup_by_path(root, account_path)
-    txns = get_transactions(account, months)
+    txns = get_transactions(account, drange)
     if account_path == DEBUG_ACCOUNT:
         for txn in txns:
             print_txn(txn, account_path)
@@ -123,7 +141,7 @@ def get_all_transactions_sum(root, account_path, months):
     return sum(values)
 
 
-def process(root, layout, months, output):
+def process(root, layout, drange, output):
     nodes = {}
 
     for group in layout.keys():
@@ -139,7 +157,7 @@ def process(root, layout, months, output):
                 value = nodes[account_path]
             else:
                 account_name = account_path.split(':')[-1]
-                value = get_all_transactions_sum(root, account_path, months)
+                value = get_all_transactions_sum(root, account_path, drange)
                 if direction == 'in':
                     value = -value
 
@@ -155,7 +173,7 @@ def process(root, layout, months, output):
 def main():
     args = parser.parse_args()
 
-    months = MonthRange(args.year, args.month, args.num_months)
+    drange = DateRange(args.year, args.month, args.day, args.num_months, args.num_days)
 
     with open(args.layout, "r", encoding="utf-8") as f:
         layout = yaml.safe_load(f)
@@ -165,7 +183,7 @@ def main():
         root = book.get_root_account()
         with open(str(args.output) + '.mmd', "w", encoding="utf-8") as output:
             output.write(MMD_HEADER)
-            process(root, layout, months, output)
+            process(root, layout, drange, output)
 
 
 if __name__ == "__main__":
