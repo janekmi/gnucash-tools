@@ -3,3 +3,4 @@
 *.yaml
 !.github/workflows/*.yaml
 *.mmd
+*.csv
