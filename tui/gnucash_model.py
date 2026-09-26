@@ -70,11 +70,13 @@ class GnuCashAccount:
     def transactions(self):
         return [GnuCashTransaction(self, split.parent) for split in self._account.GetSplitList()]
 
+    def get_transactions_with_filter(self, filter: Collable[[GnuCashTransaction], bool]) -> list[GnuCashTransaction]:
+        return [tx for tx in self.transactions if filter(tx)]      
+
     def get_transactions_by_month(self, year: int, month: int) -> list[GnuCashTransaction]:
-        return [
-            tx for tx in self.transactions
-            if tx.date.startswith(f"{year:04d}-{month:02d}")
-        ]
+        def filter(tx: GnuCashTransaction) -> bool:
+            return tx.date.startswith(f"{year}-{month:02d}")
+        return self.get_transactions_with_filter(filter)
 
     @property
     def children(self) -> List[GnuCashAccount]:
