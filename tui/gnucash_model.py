@@ -20,7 +20,15 @@ class GnuCashTransaction:
             self._other_account = None
 
     @property
-    def date(self):
+    def year(self) -> int:
+        return self._transaction.GetDate().year
+
+    @property
+    def month(self) -> int:
+        return self._transaction.GetDate().month
+
+    @property
+    def date(self) -> str:
         return self._transaction.GetDate().strftime("%Y-%m-%d")
 
     @property

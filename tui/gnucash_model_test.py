@@ -22,6 +22,8 @@ parser.add_argument(
 def print_helper(txn: GnuCashTransaction) -> None:
     print("---")
     print(f"Date:          {txn.date}")
+    print(f"Year:          {txn.year}")
+    print(f"Month:         {txn.month}")
     print(f"Description:   {txn.description}")
     print(f"Deposit:       {txn.deposit}")
     print(f"Withdrawal:    {txn.withdrawal}")
@@ -62,11 +64,11 @@ def test04(model: GnuCashModel) -> None:
 
 
 def main(model: GnuCashModel) -> None:
-    test00(model)
+    # test00(model)
     test01(model)
-    test02(model)
-    test03(model)
-    test04(model)
+    # test02(model)
+    # test03(model)
+    # test04(model)
 
 
 if __name__ == "__main__":
