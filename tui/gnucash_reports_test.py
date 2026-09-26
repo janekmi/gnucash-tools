@@ -7,7 +7,7 @@ import yaml
 
 from pathlib import Path
 from gnucash_model import GnuCashModel
-from gnucash_reports import GnuCashIncomeExpenseMonthReport, GnuCashIncomeExpense12MonthReport
+from gnucash_reports import GnuCashCustomReport, GnuCashMonthReport, GnuCash12MonthReport
 
 
 # Arguments
@@ -20,12 +20,25 @@ parser.add_argument(
 )
 
 
-def main(model: GnuCashModel) -> None:
-    # report = GnuCashIncomeExpenseMonthReport(model, 2026, 8)
-    report = GnuCashIncomeExpense12MonthReport(model, 2026, 8)
+def print_heler(report: GnuCashCustomReport) -> None:
     print(report.income)
     print(report.expense)
-    print(report.liabilities)
+    print(report.liabilities) 
+
+
+def test00(model: GnuCashModel) -> None:
+    report = GnuCashMonthReport(model, 2026, 8)
+    print_heler(report)
+
+
+def test01(model: GnuCashModel) -> None:
+    report = GnuCash12MonthReport(model, 2026, 8)
+    print_heler(report)
+
+
+def main(model: GnuCashModel) -> None:
+    # test00(model)
+    test01(model)
 
 
 if __name__ == "__main__":
