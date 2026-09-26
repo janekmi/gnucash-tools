@@ -7,11 +7,12 @@ import argparse
 from pathlib import Path
 from typing import List
 from gnucash_model import GnuCashModel
+from gnucash_pane import GnuCashPane
 from account_pane import AccountPane
 from report_pane import ReportPane
 from monthyear_picker import MonthYearPicker, MonthYear
 from textual.app import App, ComposeResult
-from textual.widgets import Header, Footer, Label, Markdown, TabbedContent, TabPane, Tree, Static, DataTable
+from textual.widgets import Header, Footer, TabbedContent, TabPane, Tree
 
 # Arguments
 parser = argparse.ArgumentParser(description="Apply rules")
@@ -106,9 +107,9 @@ class GnuCashTUI(App):
                 return
         pane = AccountPane(
             label,
+            path=self._tree.cursor_node.data,
             monthyear=self._month_year,
             model=self._model,
-            path=self._tree.cursor_node.data,
             id=id
         )
         self._tabs.add_pane(pane)
@@ -152,7 +153,7 @@ class GnuCashTUI(App):
         self._month_year.set(year, month)
         self.sub_title = str(self._month_year)
 
-        for pane in self._tabs.query(AccountPane):
+        for pane in self._tabs.query(GnuCashPane):
             pane.update_monthyear()
         # self.notify(f"Selected: {year:04d}-{month:02d}")
 
