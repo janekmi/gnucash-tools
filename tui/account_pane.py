@@ -7,7 +7,7 @@ from gnucash_model import GnuCashModel
 from monthyear_picker import MonthYear
 
 
-COLUMNS = ["Date", "Description", "Deposit", "Withdrawal"]
+COLUMNS = ["Date", "Description", "Deposit", "Withdrawal", "Other account"]
 
 
 class AccountPane(TabPane):
@@ -33,12 +33,13 @@ class AccountPane(TabPane):
         yield DataTable()
 
     def _load_data(self) -> None:
-        for index, txn in enumerate(self._account.get_transactions_by_date(self._year, self._month)):
+        for index, txn in enumerate(self._account.get_transactions_by_month(self._year, self._month)):
                 self._table.add_row(
                     txn.date,
                     txn.description,
                     txn.deposit,
-                    txn.withdrawal
+                    txn.withdrawal,
+                    "---" if txn.is_multi_split else txn.other_account.name
                 )
 
     def on_mount(self) -> None:

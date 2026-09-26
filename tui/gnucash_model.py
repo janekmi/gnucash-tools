@@ -3,16 +3,21 @@
 
 from __future__ import annotations
 
-from gnucash import Session, SessionOpenMode
+from gnucash import Session, SessionOpenMode, Account
 
 class GnuCashTransaction:
     def __init__(self, account: GnuCashAccount, transaction):
         self._account = account
         self._transaction = transaction
         self._is_multi_split = len(transaction.GetSplitList()) > 2
+        self._other_account: Account = None
         for split in self._transaction.GetSplitList():
             if split.GetAccount().GetName() == self._account.name:
-                self._amount = split.GetAmount().to_double() 
+                self._amount = split.GetAmount().to_double()
+            else:
+                self._other_account = split.GetAccount()
+        if self._is_multi_split:
+            self._other_account = None
 
     @property
     def date(self):
@@ -42,6 +47,16 @@ class GnuCashTransaction:
             return f"{-self._amount:10.2f}"
         return ""
 
+    @property
+    def other_account(self) -> GnuCashAccount:
+        if (self._is_multi_split):
+            return None
+        return GnuCashAccount(self._other_account)
+
+    @property
+    def amount(self) -> float:
+        return self._amount
+
 
 class GnuCashAccount:
     def __init__(self, account):
@@ -55,11 +70,15 @@ class GnuCashAccount:
     def transactions(self):
         return [GnuCashTransaction(self, split.parent) for split in self._account.GetSplitList()]
 
-    def get_transactions_by_date(self, year: int, month: int) -> list[GnuCashTransaction]:
+    def get_transactions_by_month(self, year: int, month: int) -> list[GnuCashTransaction]:
         return [
             tx for tx in self.transactions
             if tx.date.startswith(f"{year:04d}-{month:02d}")
         ]
+
+    @property
+    def children(self) -> List[GnuCashAccount]:
+        return [GnuCashAccount(child) for child in self._account.get_children()]
 
 
 class GnuCashModel:
@@ -70,6 +89,10 @@ class GnuCashModel:
     @property
     def gnucash_file(self) -> str:
         return self._gnucash_file
+
+    @property
+    def session(self) -> Session:
+        return self._session
 
     @property
     def accounts_tree(self):
