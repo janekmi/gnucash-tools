@@ -49,7 +49,7 @@ class GnuCashTUI(App):
         ("a", "show_tab('accounts')", "Accounts"),
         ("o", "open_tab()", "Open"),
         ("c", "close_tab()", "Close"),
-        ("d", "date_picker()", "Date"),
+        ("m", "date_picker()", "Month"),
         ("q", "quit", "Quit"),
     ]
 
