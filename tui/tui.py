@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import List
 from gnucash_model import GnuCashModel
 from account_pane import AccountPane
+from report_pane import ReportPane
 from monthyear_picker import MonthYearPicker, MonthYear
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Label, Markdown, TabbedContent, TabPane, Tree, Static, DataTable
@@ -50,6 +51,7 @@ class GnuCashTUI(App):
         ("o", "open_tab()", "Open"),
         ("c", "close_tab()", "Close"),
         ("m", "date_picker()", "Month"),
+        ("r", "report_tab()", "Report"),
         ("q", "quit", "Quit"),
     ]
 
@@ -107,6 +109,21 @@ class GnuCashTUI(App):
             monthyear=self._month_year,
             model=self._model,
             path=self._tree.cursor_node.data,
+            id=id
+        )
+        self._tabs.add_pane(pane)
+        self._tabs.active = id
+
+    def action_report_tab(self) -> None:
+        """Open the report tab."""
+        id = "report"
+        for pane in self._tabs.query(ReportPane):
+            if pane.id == id:
+                self._tabs.active = id
+                return
+        pane = ReportPane(
+            monthyear=self._month_year,
+            model=self._model,
             id=id
         )
         self._tabs.add_pane(pane)
