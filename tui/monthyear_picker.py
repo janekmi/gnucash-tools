@@ -12,15 +12,15 @@ from textual.widgets import Button, Label, Select
 class MonthYear:
     def __init__(self) -> None:
         initial = date.today()
-        self._year: int = initial.year
-        self._month: int = initial.month
+        self.year: int = initial.year
+        self.month: int = initial.month
 
     def __str__(self):
-        return f"{self._year}-{self._month:02d}"
+        return f"{self.year}-{self.month:02d}"
 
     def set(self, year: int, month: int) -> None:
-        self._year = year
-        self._month = month
+        self.year = year
+        self.month = month
 
 
 class MonthYearPicker(ModalScreen[tuple[int, int] | None]):
@@ -64,8 +64,8 @@ class MonthYearPicker(ModalScreen[tuple[int, int] | None]):
         super().__init__()
 
         self._month_year = initial
-        self._year: int = initial._year
-        self._month: int = initial._month
+        self._year: int = initial.year
+        self._month: int = initial.month
 
     def compose(self) -> ComposeResult:
         years = [(str(year), year) for year in range(2000, 2031)]
