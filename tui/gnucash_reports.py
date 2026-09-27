@@ -2,7 +2,7 @@
 # Copyright (c) 2026 Jan Michalski
 
 from typing import Callable
-from gnucash_model import GnuCashModel, GnuCashAccount, GnuCashTransaction
+from gnucash_model import GnuCashModel, GnuCashAccount, GnuCashTransaction, GnuCashAmount
 
 
 class GnuCashCustomReport:
@@ -22,13 +22,13 @@ class GnuCashCustomReport:
         self._model = model
         # income
         account = model.get_account_by_path(self.INCOME_PATH)
-        self._income: float = _sum_account_and_children(account, filter)
+        self._income = GnuCashAmount(_sum_account_and_children(account, filter))
         # expense
         account = model.get_account_by_path(self.EXPENSES_PATH)
-        self._expense: float = _sum_account_and_children(account, filter)
+        self._expense = GnuCashAmount(_sum_account_and_children(account, filter))
         # liabilities
         account = model.get_account_by_path(self.LIABILITIES_PATH)
-        self._liabilities: float = _sum_account_and_children(account, filter)
+        self._liabilities = GnuCashAmount(_sum_account_and_children(account, filter))
 
     @property
     def income(self):
