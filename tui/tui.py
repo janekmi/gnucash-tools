@@ -88,7 +88,6 @@ class GnuCashTUI(App):
         self.sub_title = str(self._month_year)
         self._populate_tree(self._tree.root, self._model.accounts_tree, "")
         self._tree.focus()
-        self.refresh_bindings()
 
     def action_show_tab(self, tab: str) -> None:
         """Switch to a new tab."""
