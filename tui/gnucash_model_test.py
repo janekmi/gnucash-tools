@@ -25,8 +25,8 @@ def print_helper(txn: GnuCashTransaction) -> None:
     print(f"Year:          {txn.year}")
     print(f"Month:         {txn.month}")
     print(f"Description:   {txn.description}")
-    print(f"Deposit:       {txn.deposit}")
-    print(f"Withdrawal:    {txn.withdrawal}")
+    print(f"Deposit:       {txn.deposit_str}")
+    print(f"Withdrawal:    {txn.withdrawal_str}")
     print(f"Other account: {txn.other_account.name}")
 
 

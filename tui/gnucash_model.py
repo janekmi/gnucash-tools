@@ -9,16 +9,32 @@ class GnuCashAmount:
     def __init__(self, amount: float):
         self._amount = amount
 
+    @staticmethod
+    def format(amount: float) -> str:
+        return f"{amount:10.2f}"
+
     @property
-    def deposit(self) -> str:
+    def deposit(self) -> float:
         if self._amount >= 0:
-            return f"{self._amount:10.2f}"
+            return self._amount
+        return 0
+
+    @property
+    def withdrawal(self) -> float:
+        if self._amount < 0:
+            return -self._amount
+        return 0
+
+    @property
+    def deposit_str(self) -> str:
+        if self._amount >= 0:
+            return GnuCashAmount.format(self._amount)
         return ""
 
     @property
-    def withdrawal(self) -> str:
+    def withdrawal_str(self) -> str:
         if self._amount < 0:
-            return f"{-self._amount:10.2f}"
+            return GnuCashAmount.format(-self._amount)
         return ""
 
     @property
@@ -61,16 +77,16 @@ class GnuCashTransaction:
         return self._is_multi_split
 
     @property
-    def deposit(self) -> str:
+    def deposit_str(self) -> str:
         if self._is_multi_split:
             return "---"
-        return self._amount.deposit
+        return self._amount.deposit_str
 
     @property
-    def withdrawal(self) -> str:
+    def withdrawal_str(self) -> str:
         if self._is_multi_split:
             return "---"
-        return self._amount.withdrawal
+        return self._amount.withdrawal_str
 
     @property
     def other_account(self) -> GnuCashAccount:
