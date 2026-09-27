@@ -39,3 +39,7 @@ jobs:
         if: always()
         run: |
           echo "::notice::$(sed -f .github/workflows/scripts/join_lines.sed pylint_output.txt)"
+
+      - name: Fail if pylint score is below 10/10
+        run: |
+          grep -q "Your code has been rated at 10.00/10" pylint_output.txt
