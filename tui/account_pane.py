@@ -23,7 +23,7 @@ class AccountPane(GnuCashPane):
                 self._table.add_row(
                     txn.date,
                     txn.description,
-                    txn.deposit,
-                    txn.withdrawal,
+                    txn.deposit_str,
+                    txn.withdrawal_str,
                     "---" if txn.is_multi_split else txn.other_account.name
                 )
