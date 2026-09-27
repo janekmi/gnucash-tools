@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (c) 2026 Jan Michalski
 
-from gnucash_model import GnuCashAmount
 from gnucash_pane import GnuCashPane
 from gnucash_reports import GnuCashCustomReport, GnuCash12MonthReport
 
@@ -24,4 +23,7 @@ class ReportPane(GnuCashPane):
             (GnuCashCustomReport.LIABILITIES_PATH, report.liabilities.deposit_str, report.liabilities.withdrawal_str),
         ]
         for row in rows:
-                self._table.add_row(*row)
+            self._table.add_row(*row)
+        self._table.add_row()
+        self._table.add_row("Sum", report.deposit_str, report.withdrawal_str)
+        self._table.add_row("Total", report.total.deposit_str, report.total.withdrawal_str)
