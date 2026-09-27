@@ -42,6 +42,26 @@ class GnuCashCustomReport:
     def liabilities(self):
         return self._liabilities
 
+    @property
+    def deposit(self):
+        return self._income.deposit + self._expense.deposit + self._liabilities.deposit
+
+    @property
+    def withdrawal(self):
+        return self._income.withdrawal + self._expense.withdrawal + self._liabilities.withdrawal
+
+    @property
+    def deposit_str(self):
+        return GnuCashAmount.format(self.deposit)
+
+    @property
+    def withdrawal_str(self):
+        return GnuCashAmount.format(self.withdrawal)
+
+    @property
+    def total(self):
+        return GnuCashAmount(self.deposit - self.withdrawal)
+
 
 class GnuCashMonthReport(GnuCashCustomReport):
     def __init__(self, model: GnuCashModel, year: int, month: int):
