@@ -5,6 +5,27 @@ from __future__ import annotations
 
 from gnucash import Session, SessionOpenMode, Account
 
+class GnuCashAmount:
+    def __init__(self, amount: float):
+        self._amount = amount
+
+    @property
+    def deposit(self) -> str:
+        if self._amount >= 0:
+            return f"{self._amount:10.2f}"
+        return ""
+
+    @property
+    def withdrawal(self) -> str:
+        if self._amount < 0:
+            return f"{-self._amount:10.2f}"
+        return ""
+
+    @property
+    def value(self) -> float:
+        return self._amount
+
+
 class GnuCashTransaction:
     def __init__(self, account: GnuCashAccount, transaction):
         self._account = account
@@ -13,7 +34,7 @@ class GnuCashTransaction:
         self._other_account: Account = None
         for split in self._transaction.GetSplitList():
             if split.GetAccount().GetName() == self._account.name:
-                self._amount = split.GetAmount().to_double()
+                self._amount = GnuCashAmount(split.GetAmount().to_double())
             else:
                 self._other_account = split.GetAccount()
         if self._is_multi_split:
@@ -43,17 +64,13 @@ class GnuCashTransaction:
     def deposit(self) -> str:
         if self._is_multi_split:
             return "---"
-        if self._amount >= 0:
-            return f"{self._amount:10.2f}"
-        return ""
+        return self._amount.deposit
 
     @property
     def withdrawal(self) -> str:
         if self._is_multi_split:
             return "---"
-        if self._amount < 0:
-            return f"{-self._amount:10.2f}"
-        return ""
+        return self._amount.withdrawal
 
     @property
     def other_account(self) -> GnuCashAccount:
@@ -63,7 +80,7 @@ class GnuCashTransaction:
 
     @property
     def amount(self) -> float:
-        return self._amount
+        return self._amount.value
 
 
 class GnuCashAccount:

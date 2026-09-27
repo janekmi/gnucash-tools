@@ -18,9 +18,9 @@ class ReportPane(GnuCashPane):
     def load_data(self) -> None:
         report = GnuCash12MonthReport(self._model, self._year, self._month)
         rows = [
-            (GnuCashCustomReport.INCOME_PATH, report.income),
-            (GnuCashCustomReport.EXPENSES_PATH, report.expense),
-            (GnuCashCustomReport.LIABILITIES_PATH, report.liabilities),
+            (GnuCashCustomReport.INCOME_PATH, report.income.deposit, report.income.withdrawal),
+            (GnuCashCustomReport.EXPENSES_PATH, report.expense.deposit, report.expense.withdrawal),
+            (GnuCashCustomReport.LIABILITIES_PATH, report.liabilities.deposit, report.liabilities.withdrawal),
         ]
         for row in rows:
                 self._table.add_row(*row)
