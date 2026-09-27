@@ -10,6 +10,7 @@ from gnucash_model import GnuCashModel
 from gnucash_panes import GnuCashPane, AccountPane, ReportPane
 from monthyear_picker import MonthYearPicker, MonthYear
 from textual.app import App, ComposeResult
+from textual import on
 from textual.widgets import Header, Footer, TabbedContent, TabPane, Tree
 
 # Arguments
@@ -87,6 +88,7 @@ class GnuCashTUI(App):
         self.sub_title = str(self._month_year)
         self._populate_tree(self._tree.root, self._model.accounts_tree, "")
         self._tree.focus()
+        self.refresh_bindings()
 
     def action_show_tab(self, tab: str) -> None:
         """Switch to a new tab."""
@@ -156,6 +158,19 @@ class GnuCashTUI(App):
         for pane in self._tabs.query(GnuCashPane):
             pane.update_monthyear()
         # self.notify(f"Selected: {year:04d}-{month:02d}")
+
+    @on(TabbedContent.TabActivated, "#tabs")
+    def on_tab_changed(self, _: TabbedContent.TabActivated) -> None:
+        self.refresh_bindings()
+
+    def check_action(
+        self, action: str, parameters: tuple[object, ...]
+    ) -> bool | None:
+        if action == "open_tab" and self._tabs.active != "accounts":
+            return None
+        if action == "close_tab" and self._tabs.active == "accounts":
+            return None
+        return True
 
 
 if __name__ == "__main__":
