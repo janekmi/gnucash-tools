@@ -3,7 +3,7 @@
 
 from datetime import date
 
-from textual.app import App, ComposeResult
+from textual.app import ComposeResult
 from textual.containers import Container, Horizontal
 from textual.screen import ModalScreen
 from textual.widgets import Button, Label, Select

@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+from typing import Callable, List
 from gnucash import Session, SessionOpenMode, Account
 
 class GnuCashAmount:
@@ -90,7 +91,7 @@ class GnuCashTransaction:
 
     @property
     def other_account(self) -> GnuCashAccount:
-        if (self._is_multi_split):
+        if self._is_multi_split:
             return None
         return GnuCashAccount(self._other_account)
 
@@ -111,13 +112,14 @@ class GnuCashAccount:
     def transactions(self):
         return [GnuCashTransaction(self, split.parent) for split in self._account.GetSplitList()]
 
-    def get_transactions_with_filter(self, filter: Collable[[GnuCashTransaction], bool]) -> list[GnuCashTransaction]:
-        return [tx for tx in self.transactions if filter(tx)]      
+    def get_transactions_with_filter(self,
+    filter_func: Callable[[GnuCashTransaction], bool]) -> list[GnuCashTransaction]:
+        return [tx for tx in self.transactions if filter_func(tx)]
 
     def get_transactions_by_month(self, year: int, month: int) -> list[GnuCashTransaction]:
-        def filter(tx: GnuCashTransaction) -> bool:
+        def filter_func(tx: GnuCashTransaction) -> bool:
             return tx.date.startswith(f"{year}-{month:02d}")
-        return self.get_transactions_with_filter(filter)
+        return self.get_transactions_with_filter(filter_func)
 
     @property
     def children(self) -> List[GnuCashAccount]:

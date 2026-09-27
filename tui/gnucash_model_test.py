@@ -3,10 +3,9 @@
 # Copyright (c) 2026 Jan Michalski
 
 import argparse
-import yaml
-
 from pathlib import Path
-from gnucash_model import GnuCashModel, GnuCashAccount, GnuCashTransaction
+import yaml
+from gnucash_model import GnuCashModel, GnuCashTransaction
 
 
 # Arguments
@@ -49,11 +48,11 @@ def test02(model: GnuCashModel) -> None:
 
 
 def test03(model: GnuCashModel) -> None:
-    def filter(txn: GnuCashTransaction) -> bool:
+    def filter_func(txn: GnuCashTransaction) -> bool:
         return txn.description == "eBay"
     account = model.get_account_by_path("Assets/Starling")
     print(account.name)
-    for _, txn in enumerate(account.get_transactions_with_filter(filter)):
+    for _, txn in enumerate(account.get_transactions_with_filter(filter_func)):
         print_helper(txn)
 
 

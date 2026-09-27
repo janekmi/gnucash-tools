@@ -117,6 +117,7 @@ def get_transactions(account, drange):
 def print_txn(txn, account_path):
     account_name = account_path.split(':')[-1]
     dts = txn.GetDate().strftime("%Y-%m-%d")
+    amount: float = 0
     for split in txn.GetSplitList():
         if split.GetAccount().GetName() == account_name:
             amount = split.GetAmount().to_double()

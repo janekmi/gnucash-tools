@@ -58,6 +58,8 @@ class GnuCashTUI(App):
         super().__init__()
         self._model = model
         self._month_year = MonthYear()
+        self._tree = None
+        self._tabs = None
 
     def _populate_tree(self, tree, accs: List, path: str) -> None:
         """Populate the accounts tree with GnuCash accounts."""
@@ -95,38 +97,38 @@ class GnuCashTUI(App):
         """Open a new tab."""
         node = self._tree.cursor_node
         label: str = str(node.label)
-        id = str2id(label)
+        id_ = str2id(label)
         if not node or label == "Accounts":
             self.notify("Select an account first.")
             return
         for pane in self._tabs.query(AccountPane):
-            if pane.id == id:
-                self._tabs.active = id
+            if pane.id == id_:
+                self._tabs.active = id_
                 return
         pane = AccountPane(
             label,
             path=self._tree.cursor_node.data,
             monthyear=self._month_year,
             model=self._model,
-            id=id
+            id=id_
         )
         self._tabs.add_pane(pane)
-        self._tabs.active = id
+        self._tabs.active = id_
 
     def action_report_tab(self) -> None:
         """Open the report tab."""
-        id = "report"
+        id_ = "report"
         for pane in self._tabs.query(ReportPane):
-            if pane.id == id:
-                self._tabs.active = id
+            if pane.id == id_:
+                self._tabs.active = id_
                 return
         pane = ReportPane(
             monthyear=self._month_year,
             model=self._model,
-            id=id
+            id=id_
         )
         self._tabs.add_pane(pane)
-        self._tabs.active = id
+        self._tabs.active = id_
 
     async def action_close_tab(self) -> None:
         """Close the currently active tab."""
