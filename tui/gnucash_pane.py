@@ -26,7 +26,7 @@ class GnuCashPane(TabPane):
 
     def compose(self) -> ComposeResult:
         """Create child widgets of an account pane."""
-        yield DataTable()
+        yield DataTable(zebra_stripes=True)
 
     def load_data(self) -> None:
         pass
