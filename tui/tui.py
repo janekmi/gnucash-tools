@@ -7,9 +7,7 @@ import argparse
 from pathlib import Path
 from typing import List
 from gnucash_model import GnuCashModel
-from gnucash_pane import GnuCashPane
-from account_pane import AccountPane
-from report_pane import ReportPane
+from gnucash_panes import GnuCashPane, AccountPane, ReportPane
 from monthyear_picker import MonthYearPicker, MonthYear
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, TabbedContent, TabPane, Tree
