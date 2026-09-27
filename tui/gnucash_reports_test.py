@@ -3,7 +3,6 @@
 # Copyright (c) 2026 Jan Michalski
 
 import argparse
-import yaml
 
 from pathlib import Path
 from gnucash_model import GnuCashModel
@@ -23,7 +22,7 @@ parser.add_argument(
 def print_heler(report: GnuCashCustomReport) -> None:
     print(report.income)
     print(report.expense)
-    print(report.liabilities) 
+    print(report.liabilities)
 
 
 def test00(model: GnuCashModel) -> None:

@@ -10,25 +10,26 @@ class GnuCashCustomReport:
     EXPENSES_PATH = "Expenses"
     LIABILITIES_PATH = "Liabilities"
 
-    def __init__(self, model: GnuCashModel, filter: Callable[[GnuCashTransaction], bool]):
-        def _sum_account_and_children(account: GnuCashAccount, filter: Callable[[GnuCashTransaction], bool]) -> float:
-            sum: float = 0.0
-            for tx in account.get_transactions_with_filter(filter):
+    def __init__(self, model: GnuCashModel, filter_func: Callable[[GnuCashTransaction], bool]):
+        def _sum_account_and_children(account: GnuCashAccount,
+        filter_func: Callable[[GnuCashTransaction], bool]) -> float:
+            ret: float = 0.0
+            for tx in account.get_transactions_with_filter(filter_func):
                 # print(tx.description)
-                sum += tx.amount
+                ret += tx.amount
             for child in account.children:
-                sum += _sum_account_and_children(child, filter)
-            return sum
+                ret += _sum_account_and_children(child, filter_func)
+            return ret
         self._model = model
         # income
         account = model.get_account_by_path(self.INCOME_PATH)
-        self._income = GnuCashAmount(_sum_account_and_children(account, filter))
+        self._income = GnuCashAmount(_sum_account_and_children(account, filter_func))
         # expense
         account = model.get_account_by_path(self.EXPENSES_PATH)
-        self._expense = GnuCashAmount(_sum_account_and_children(account, filter))
+        self._expense = GnuCashAmount(_sum_account_and_children(account, filter_func))
         # liabilities
         account = model.get_account_by_path(self.LIABILITIES_PATH)
-        self._liabilities = GnuCashAmount(_sum_account_and_children(account, filter))
+        self._liabilities = GnuCashAmount(_sum_account_and_children(account, filter_func))
 
     @property
     def income(self):
@@ -37,7 +38,7 @@ class GnuCashCustomReport:
     @property
     def expense(self):
         return self._expense
-    
+
     @property
     def liabilities(self):
         return self._liabilities
@@ -65,9 +66,9 @@ class GnuCashCustomReport:
 
 class GnuCashMonthReport(GnuCashCustomReport):
     def __init__(self, model: GnuCashModel, year: int, month: int):
-        def filter(tx: GnuCashTransaction) -> bool:
+        def filter_func(tx: GnuCashTransaction) -> bool:
             return tx.date.startswith(f"{year}-{month:02d}")
-        super().__init__(model, filter)
+        super().__init__(model, filter_func)
 
 
 class GnuCash12MonthReport(GnuCashCustomReport):
@@ -78,9 +79,10 @@ class GnuCash12MonthReport(GnuCashCustomReport):
         else:
             month_end += 12
             year_end = year_start - 1
-        def filter(tx: GnuCashTransaction) -> bool:
+        def filter_func(tx: GnuCashTransaction) -> bool:
             if tx.year == year_start:
                 return tx.month <= month_start
-            elif tx.year == year_end:
+            if tx.year == year_end:
                 return tx.month >= month_end
-        super().__init__(model, filter)
+            return False
+        super().__init__(model, filter_func)
