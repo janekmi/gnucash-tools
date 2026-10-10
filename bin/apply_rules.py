@@ -54,7 +54,10 @@ def account_lookup_by_path(account, path_str):
         if len(path) == 0:
             return child
         return _account_lookup_by_path(child, path)
-    return _account_lookup_by_path(account, path_str.split(":"))
+    acc = _account_lookup_by_path(account, path_str.split(":"))
+    if acc is None:
+        raise ValueError(f"Account '{path_str}' does not exist.")
+    return acc
 
 
 def filter_out(dt, year, month):
